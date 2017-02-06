@@ -9,7 +9,7 @@ I tried twice with Wordpress first [writing about cooking](https://tandoorisprin
 
 I will probably migrate my old posts over and am working on a new one about using Docker for development. Stay tuned!
 
-```
+```python
 import python
 python.python(python)
 ```
