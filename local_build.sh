@@ -1,1 +1,1 @@
-docker run --rm --net=host -it -v "${PWD}":/site github-pages serve --watch --port 9001
+docker run --net=host --rm -it -v "${PWD}":/site github-pages serve --port=9999 
