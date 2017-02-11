@@ -1,6 +1,7 @@
 ---
 layout: post
 title: How I use Docker for development
+excerpt_separator: <!--more-->
 ---
 
 Are you, dear reader, a little bit like me? 
@@ -10,12 +11,15 @@ Relatively comfortable with Linux but don't have them _mad l33t haxxor skillz_?
 Do you ever find yourself getting frustrated when your OS yells 
 **package _ihateyou_ is needed but is not going to be installed because F\*\*\* YOU THAT'S WHY....**
 
-
 Have you ever run into a scenario where you are working on more than one project and each has a list of conflicting dependencies, and there may be ways to solve your problems by maybe  compiling things from source or hacking your makefiles but you're just soooo very tired.
 
 Finally, are you maybe a roboticist that either doesn't want to be tied down to Ubuntu  for using ROS or is (rightfully) weary of the dependency hell it creates?  (hint: try using OpenCV3 with ROS Indigo ... I dare ya!)
 
-If some combination of the above is true, Docker may be for you! Not the _deploy your web app to the cloud and make it easy to scale_ variety,  not even the _you want to use tensorflow? run **docker run tensorflow-container- that-writes-your-thesis-for-you-and-makes-you-coffee**_ variety, but the plain and simple _use containers like VMs but with barely any overhead and the ability to use your  GPU to the fullest while not having to manage multiple environments_ variety. Okay, that may actually not be that plain and simple but after reading this article you should be able to do just that!
+If some combination of the above is true, Docker may be for you! 
+
+<!--more-->
+
+Not the _deploy your web app to the cloud and make it easy to scale_ variety,  not even the _you want to use tensorflow? run **docker run tensorflow-container- that-writes-your-thesis-for-you-and-makes-you-coffee**_ variety, but the plain and simple _use containers like VMs but with barely any overhead and the ability to use your  GPU to the fullest while not having to manage multiple environments_ variety. Okay, that may actually not be that plain and simple but after reading this article you should be able to do just that!
 
 #### Before we begin, know that:
 
