@@ -1186,7 +1186,7 @@ h6,
   font-family: inherit;
   font-weight: 500;
   line-height: 1.5;
-  color: inherit;
+  color: #859900;
 }
 h1 small,
 h2 small,
@@ -1537,7 +1537,7 @@ code {
   padding: 2px 4px;
   font-size: 90%;
   color: #c7254e;
-  background-color: #f9f2f4;
+  background-color: rgba(255,255,255,0.05);
   border-radius: 4px;
 }
 kbd {
@@ -1562,10 +1562,10 @@ pre {
   margin: 0 0 10px;
   font-size: 13px;
   line-height: 1.42857143;
-  color: #333;
+  color: inherited;
   word-break: break-all;
   word-wrap: break-word;
-  background-color: #f5f5f5;
+  background-color: inherited;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
@@ -6755,3 +6755,7 @@ button.close {
   }
 }
 /*# sourceMappingURL=bootstrap.css.map */
+
+em {
+    color: rgba(150, 170, 170, 255);
+}

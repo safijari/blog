@@ -18,7 +18,7 @@ a:hover,
 a:focus,
 a:active,
 a.active {
-  color: #8D8D8D;
+    color: white;
   outline: none;
 }
 h1,
@@ -117,7 +117,7 @@ header .intro-text .skills {
   outline: none;
 }
 .navbar-custom .navbar-brand {
-  color: white;
+  color: #859900;
 }
 .navbar-custom .navbar-brand:hover,
 .navbar-custom .navbar-brand:focus,
@@ -129,7 +129,7 @@ header .intro-text .skills {
   letter-spacing: 1px;
 }
 .navbar-custom .navbar-nav li a {
-  color: white;
+  color: #859900;
 }
 .navbar-custom .navbar-nav li a:hover {
   color: #CBCBCB;
@@ -161,16 +161,16 @@ header .intro-text .skills {
   border-radius: 30px;
 }
 .navbar-custom .navbar-toggle {
-  color: white;
+  color: #859900;
   text-transform: uppercase;
   font-size: 10px;
-  border-color: white;
+  border-color: #859900;
 }
 .navbar-custom .navbar-toggle:hover,
 .navbar-custom .navbar-toggle:focus {
-  background-color: #18BC9C;
+  background-color: rgba(120, 120, 120, 100);
   color: white;
-  border-color: #18BC9C;
+  border-color: rgba(120, 120, 120, 100);
 }
 @media (min-width: 768px) {
   .navbar-custom {
@@ -205,8 +205,8 @@ section.success {
   color: white;
 }
 section.post {
-  background: black;
-  color: white;
+  background: #002b36;
+  color: #839496;
 }
 @media (max-width: 767px) {
   section {
@@ -321,14 +321,14 @@ footer h3 {
 }
 footer .footer-above {
   padding-top: 50px;
-  background-color: black/*#2C3E50*/;
+  background-color: #073642;
 }
 footer .footer-col {
   margin-bottom: 50px;
 }
 footer .footer-below {
   padding: 25px 0;
-  background-color: rgb(20,20,20)/*#233140*/;
+  background-color: #073642;
 }
 .btn-outline {
   color: white;
