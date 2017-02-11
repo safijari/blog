@@ -8,10 +8,10 @@ body {
   overflow-x: hidden;
 }
 p {
-  font-size: 20px;
+  font-size: 16px;
 }
 p.small {
-  font-size: 16px;
+  font-size: 15px;
 }
 a,
 a:hover,
@@ -29,7 +29,7 @@ h5,
 h6 {
   font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 600;
 }
 hr.star-light,
 hr.star-primary {
@@ -101,7 +101,7 @@ header .intro-text .skills {
     font-size: xx-large;
   }
   header .intro-text .skills {
-    font-size: 1.25em;
+    font-size: 1.5em;
     line-height: ;
     text-align: left;
   }
