@@ -1287,7 +1287,10 @@ h6,
   font-size: 12px;
 }
 p {
-  margin: 0 0 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
 }
 .lead {
   margin-bottom: 20px;
