@@ -1223,6 +1223,8 @@ h2,
 h3,
 .h3 {
   margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
   margin-bottom: 10px;
 }
 h1 small,
@@ -1247,6 +1249,8 @@ h6,
 .h6 {
   margin-top: 10px;
   margin-bottom: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 h4 small,
 .h4 small,
@@ -1264,7 +1268,7 @@ h6 .small,
 }
 h1,
 .h1 {
-  font-size: 25px;
+  font-size: 22px;
 }
 h2,
 .h2 {
@@ -1276,7 +1280,7 @@ h3,
 }
 h4,
 .h4 {
-  font-size: 18px;
+  font-size: 20px;
 }
 h5,
 .h5 {
@@ -1563,6 +1567,8 @@ pre {
   display: block;
   padding: 9.5px;
   margin: 0 0 10px;
+  margin-left: 10px;
+  margin-right: 10px;
   font-size: 13px;
   line-height: 1.42857143;
   color: inherited;

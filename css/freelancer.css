@@ -8,7 +8,7 @@ body {
   overflow-x: hidden;
 }
 p {
-  font-size: 16px;
+  font-size: 20px;
 }
 p.small {
   font-size: 15px;
@@ -18,7 +18,7 @@ a:hover,
 a:focus,
 a:active,
 a.active {
-    color: white;
+    color: 	#2aa198;
   outline: none;
 }
 h1,
@@ -206,7 +206,7 @@ section.success {
 }
 section.post {
   background: #002b36;
-  color: #839496;
+  color: #b7c1c2;
 }
 @media (max-width: 767px) {
   section {
