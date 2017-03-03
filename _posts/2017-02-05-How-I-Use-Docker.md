@@ -4,6 +4,10 @@ title: How I use Docker for Robotics Development
 excerpt_separator: <!--more-->
 published: true
 ---
+#TODOS:
+1. custom theme repo
+2. twitter link
+3. Dockerfile gist
 
 Are you, dear reader, a little bit like me? 
 
@@ -28,7 +32,7 @@ I refer to not the _deploy your web app to the cloud and make it easy to scale_ 
 
 2. The experience of using Docker is not going to perfectly like running VMs. You may run into some issues that you wouldn't in VirtualBox, but the net gain in my opinion is worth a few hiccups from time to time.
 
-3. This may actually be a perfectly horrible way to use Docker. This setup has been designed for maximum convenience and security was the furthest thing from my min. If you are a Docker veteran and see obvious flaws (especially security related) please let me know in the comments.
+3. This may actually be a perfectly horrible way to use Docker. This setup has been designed for maximum convenience and security was the furthest thing from my mind. If you are a Docker veteran and see obvious flaws (especially security related) please let me know in the comments.
 
 4. I use zsh with oh-my-zsh and a custom theme that, among other niceties, helps me avoid a confusion that can arise from using docker in this fashion (namely _is a terminal I'm looking at running in a container or on the host!_). I fix this issue by passing a special environment variable to the container when it is first run and then displaying it at my terminal prompt (effectively the Docker equivalent of Inception's _spinny top test_).
 
@@ -51,10 +55,10 @@ Since [ros skillz pay my billz](twitter link) I, will focus on ROS development i
 First we need to specify the base image. The `FROM` statement accomplishes this:
 
 ```
-FROM ros:kinetic-desktop-full
+FROM osrf/ros:kinetic-desktop-full
 ```
 
- When building this image Docker will first search for this image locally and if it fails it will then turn to a remote repository (e.g. Dockerhub). The tag `ros:kinetic-desktop-full` starts this container off with a full desktop install of ROS Kinetic on the top of xenial. Note that if you were to look at the Dockerfile for our base image, you'll find that in includes a `FROM ros:kinetic-desktop`. In fact, you can go through the Dockerfiles for all such images you'll find the following hierarchy:
+ When building this image Docker will first search for this image locally and if it fails it will then turn to a remote repository (e.g. Dockerhub) and look for it under the user `osrf`. The tag `osrf/ros:kinetic-desktop-full` starts this container off with a full desktop install of ROS Kinetic on the top of xenial. Note that if you were to look at the Dockerfile for our base image, you'll find that in includes a `FROM osrf/ros:kinetic-desktop`. In fact, you can go through the Dockerfiles for all such images you'll find the following hierarchy:
 
 ```
 ros:kinetic-desktop-full 
@@ -123,10 +127,19 @@ It is very easy to forget the dot (.) at the end of that command, but maybe cons
 
 Note that if you created another Dockerfile that depended upon `ros:kinetic-desktop-full`, it would not download another copy of the base image. It wouldn't even make a new copy of that image on disk. This is the power of Docker's `layered` file system. You can even run multiple instances of containers that all refer back to these images
 
-If this build command finishes successfully (and by all rights it should!), then a new image called  will now exist in your local Docker repository. You can confirm this by running `docker images`.
+If this build command finishes successfully (and by all rights it should!), then a new image called  will now exist in your local Docker repository. You can confirm this by running `docker images`. You should see a `REPOSITORY` called `kinetic` with a tag of `dev`.
 
-[SHOW OUTUPUT]
+```bash
+jari@kalman ~
+[0] % docker images
 
+REPOSITORY          TAG                    IMAGE ID            CREATED             SIZE
+kinetic             dev                    12b94e4ae23d        About an hour ago   3.67 GB
+github-pages        latest                 8dde7ef93646        About an hour ago   501 MB
+osrf/ros            kinetic-desktop-full   8b3dc7efb95a        10 hours ago        3.36 GB
+ubuntu              16.04                  0ef2e08ed3fa        2 days ago          130 MB
+ubuntu              xenial                 0ef2e08ed3fa        2 days ago          130 MB
+```
 
 ### The Run Script
 
@@ -135,11 +148,11 @@ The docker CLI program exposes a `run` command to the user. At its simplest, you
 ```bash
 #!/bin/bash
 xhost +local:
-docker run -it --net=host 
+docker run -it --net=host \
   --user=$(id -u) \
   -e DISPLAY=$DISPLAY \
   -e QT_GRAPHICSSYSTEM=native \
-  -e CONTAINER_NAME=cv-opensfm-dev \
+  -e CONTAINER_NAME=ros-kinetic-dev \
   -e USER=jari \
   --workdir=/home/$USER \
   -v "/tmp/.X11-unix:/tmp/.X11-unix" \
@@ -149,8 +162,8 @@ docker run -it --net=host
   -v "/etc/sudoers.d:/etc/sudoers.d:ro" \
   -v "/home/$USER/:/home/$USER/" \
   --device=/dev/dri:/dev/dri \
-  --name=cv-opensfm-dev \
-  cv-opensfm:imported \
+  --name=ros-kinetic-dev \
+  kinetic:dev
 ```
 
 There is a lot going on in that script, so let's break it down. The first line 
@@ -162,7 +175,7 @@ xhost +local:
 Is required for the container to be able to create graphical windows on the host, so if you want to use any GUI applications (e.g. `rviz`). Note that this may NOT be the best or most secure way! As I said before, if you know a better way kindly chime in below :relaxed:. The next statement is the full `docker run` command. We'll take in chunks:
 
 ```bash
-docker run -it --net=host 
+docker run -it --net=host \
 ```
 
 This section ensures that the container runs in interactive mode with a tty allocated (`-it`) which is needed if you want to be able to use a terminal properly. `--net=host` makes it so that programs running in the container can access the host's network directly. I like to run ROS containers in this mode since it allows me to keep the same workflow I would have if I had ROS installed natively (i.e. a local ROS master would be accessible at localhost:11311). Pointing the container at a master running elsewhere on your network (e.g. on your robot) also becomes trivial. 
@@ -186,7 +199,7 @@ The first environment variable is useful for telling Docker which display to use
 The second variable `QT_GRAPHICSSYSTEM` is necessary to set because of a weird bug I came across with QT windows and Docker. Since ROS GUIs are all QT based it's a good idea to set this! The `CONTAINER_NAME` variable
 
 ```bash
-  -e CONTAINER_NAME=cv-opensfm-dev \
+  -e CONTAINER_NAME=ros-kinetic-dev \
 ```
 
 This is a special environment variable my zsh profile uses in order to show if the terminal window I'm looking at is in a container and what its name is.
@@ -212,6 +225,42 @@ The `--workdir` flag tells Docker which folder to always start a command in. In 
   -v "/home/$USER/:/home/$USER/" \
 ```
 
-The first one basically gives Docker access to the Unix domain socket for X11 so that it can open GUIs on the host. The other lines mount groups, sudoers, as well as the actual home directory. Note that if you're not comfortable with mounting your entire home folder for whatever reason, you can cherry pick but many benefits of doing this (e.g. consistent dotfiles/shell history across host and continer) will disappear.
+The first one basically gives Docker access to the Unix domain socket for X11 so that it can open GUIs on the host. The other lines mount groups, sudoers, as well as the actual home directory. Note that if you're not comfortable with mounting your entire home folder for whatever reason, you can cherry pick but many benefits of doing this (e.g. consistent dotfiles/shell history across host and container) will disappear. Next is the line that lets the container access your GPU (note: I have only tested this under an Intel GPU and do not know enough to say if this would work under other GPUs). 
 
+```bash
+  --device=/dev/dri:/dev/dri \
+```
 
+The `--device` flag lets the container access various devices on the host. Since devices are represented as folders in linux, the syntax is very similar to that of mounting folders. The device we are mounting here is the _Direct Rendering Inteface_ or `dri`. Note that you can just as easily give the container access to a USB device (e.g. `--device=/dev/ttys0:ttys0`) which is useful when developing for certain sensors in ROS.
+
+```bash
+  --name=ros-kinetic-dev \
+  kinetic:dev
+```
+
+The final two lines tell docker how to refer to the container and which image we actually want to run. If we leave the name field blank docker will pick a name of the form `<adjective>_<computer scientist name>`). My favorite is `peaceful_torvalds` ... _as if_ ... :grin:
+
+### What now?
+
+This will throw you into a terminal inside the container. If you did everything I did and also have my `zsh` theme set up, then it will be a prompt like so:
+
+```bash
+jari@kalman (ros-kinetic-dev) ~
+[0] % 
+```
+
+At this point you can start using this terminal the way you would any terminal on a machine with ROS kinetic installed. `source /opt/ros/kinetic/setup.zsh` and start hacking! ... What is that you say? You need more than one terminal window?
+
+### Yes, Jari. We need more than one terminal window :angry: 
+
+Okay okay okay, I understand. Even for the traditional pub/echo example you need at least two windows and are often shown to need three (one for `roscore`!). There are two ways for you to do this:
+
+#### 1) The `docker exec` route:
+
+When a container is running, docker allows you to execute arbitrary commands in it from the host using `docker exec`. For example, I could actually run the `roscore` inside the container directly from the host:
+
+```bash
+docker exec ros-kinetic-dev /ros_entrypoint.sh roscore
+```
+
+In a similar fashion, you could just run `bash` or `zsh`.
