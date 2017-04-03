@@ -4,37 +4,33 @@ title: How I use Docker for Robotics Development
 excerpt_separator: <!--more-->
 published: true
 ---
-#TODOS:
-1. custom theme repo
-2. twitter link
-3. Dockerfile gist
 
 Are you, dear reader, a little bit like me? 
 
 Relatively comfortable with Linux but don't have them _mad l33t haxxor skillz_?
 
 Do you ever find yourself getting frustrated when your OS yells 
-**package _ihateyou_ is needed but is not going to be installed because F\*\*\* YOU THAT'S WHY....**
+"**package _ihateyou_ is needed but is not going to be installed because F\*\*\* YOU THAT'S WHY....**"
 
-Have you ever run into a scenario where you are working on more than one project and each has a list of conflicting dependencies, and there may be ways to solve your problems by maybe  compiling things from source or hacking your makefiles but you're just soooo very tired.
+Have you ever run into a scenario where you are working on more than one project and each has a list of conflicting dependencies, and there may be ways to solve your problems by compiling things from source or hacking your makefiles but you're just ... just so very tired :tired_face:.
 
-Finally, are you maybe a roboticist that either doesn't want to be tied down to Ubuntu  for using ROS or is (rightfully) weary of the dependency hell it creates?  (hint: try using OpenCV3 with ROS Indigo ... I dare ya!)
+Finally, are you maybe a roboticist that either doesn't want to be tied down to Ubuntu for using ROS or is (rightfully) weary of the dependency hell it creates?  (hint: try using OpenCV3 with ROS Indigo ... I dare ya!)
 
-If some combination of the above is true, Docker may be for you! 
+If some combination of the above is true, **Docker** may be for you! 
 
 <!--more-->
 
-I refer to not the _deploy your web app to the cloud and make it easy to scale_ variety,  not even the _you want to use tensorflow? just use **docker run tensorflow-container-that-writes-your-thesis-for-you-and-makes-you-coffee**_ variety, but the plain and simple _use containers like VMs but with barely any overhead and the ability to use your  GPU to the fullest while not having to manage multiple environments_ variety. Okay, this may actually not be _that_ plain and simple but after reading this article you should be able to do just that!
+I refer to not the "_deploy your web app to the cloud and make it easy to scale_" variety,  not even the "_you want to use tensorflow? just use **docker run tensorflow-container-that-writes-your-thesis-for-you-and-makes-you-coffee**_" variety, but the plain and simple "_use containers like VMs but with barely any overhead and the ability to use your  GPU to the fullest while not having to manage multiple environments_" variety. Okay, this may actually not be _that_ plain and simple but after reading this article you should be able to do just that!
 
 #### Before we begin, know that:
 
 1. This article assumes that you have installed Docker, added your user to the docker group, and are familiar with some basic commands (e.g. run, ps, exec, start, stop, rm, rmi, attach). I will explain some of these in this article but past familiarity would be better.
 
-2. The experience of using Docker is not going to perfectly like running VMs. You may run into some issues that you wouldn't in VirtualBox, but the net gain in my opinion is worth a few hiccups from time to time.
+2. The experience of using Docker is not going to perfectly like running VMs. You may run into some issues that you wouldn't in VirtualBox, but the net gain in my opinion is worth a few hiccups from time to time. On this note, what I present below was tested only on Ubuntu and has a _slight_ chance of having issues in other distros.
 
 3. This may actually be a perfectly horrible way to use Docker. This setup has been designed for maximum convenience and security was the furthest thing from my mind. If you are a Docker veteran and see obvious flaws (especially security related) please let me know in the comments.
 
-4. I use zsh with oh-my-zsh and a custom theme that, among other niceties, helps me avoid a confusion that can arise from using docker in this fashion (namely _is a terminal I'm looking at running in a container or on the host!_). I fix this issue by passing a special environment variable to the container when it is first run and then displaying it at my terminal prompt (effectively the Docker equivalent of Inception's _spinny top test_).
+4. I use zsh with oh-my-zsh and a [custom theme](https://gist.github.com/safijari/6b1dd1724a154aa493cff1e3b6bf44a5) that, among other niceties, helps me avoid a confusion that can arise from using docker in this fashion (namely _which container does this terminal belong to?_). I fix this issue by passing a special environment variable to the container when it is first run and then displaying it at my terminal prompt (effectively the Docker equivalent of Inception's _spinny top test_).
 
 #### Docker Essential Vocab
 
@@ -42,7 +38,7 @@ I refer to not the _deploy your web app to the cloud and make it easy to scale_ 
 
 - **Container**: An instance of a particular image. This is equivalent to running, say Firefox, twice. In that scenario Firefox is installed once but can be launched multiple times and each instance refers back to the same installation. when a container is running, it can't make any changes to the underlying image (images are read only!) but gets assigned a new filesystem for storage of new information. Images may be **ephemeral** (that is they are removed once you stop them and any new data is destroyed), or **persistent** (containers are kept either in an on or off state until they are explicitly removed). Note that it is possible to mount external volumes onto the containers and all changes made to the host filesystem this way are persistent!
 
-- **Dockerfile**: Simple configuration file that defines how your container is built. You can start FROM a base container, RUN a series of shell commands, set up ENVironment variables, ADD or COPY things from the host filesystem, specify what command runs when your container is started, and more! These files can start from scratch or from an existing image. Popular Linux distribution provide various images in an official capacity on ...
+- **Dockerfile**: Simple configuration file that defines how your container is built. You can start `FROM` a base container, RUN a series of shell commands, set up `ENV`ironment variables, `ADD` or `COPY` things from the host filesystem, specify what command runs when your container is started, and more! These files can start from scratch or from an existing image. Popular Linux distribution provide various images in an official capacity on ...
 
 - **Docker Hub**: One of the online repository of Docker images that is set as the remote location as default. This is very similar to GitHub and can contain both public and private images. When you install Docker this is set up as the remote repository.
 
@@ -50,7 +46,7 @@ I refer to not the _deploy your web app to the cloud and make it easy to scale_ 
 
 #### Setting up the Dockerfile
 
-Since [ros skillz pay my billz](twitter link) I, will focus on ROS development in this write up. The full file can be found [here](https://github.com/safijari/docker-files/blablabla) (note that is must be named **Dockerfile** for the build process to work). I'll explain the constituent parts below:
+Since [ros skillz pay my billz](https://twitter.com/safijari/status/818826332608098304) I, will focus on ROS development in this write up. The full file can be found [here](https://gist.github.com/safijari/6c80465058f49fbea7344c753b3c69a7) (note that is must be named **Dockerfile** for the build process to work). I'll explain the constituent parts below:
 
 First we need to specify the base image. The `FROM` statement accomplishes this:
 
@@ -58,7 +54,7 @@ First we need to specify the base image. The `FROM` statement accomplishes this:
 FROM osrf/ros:kinetic-desktop-full
 ```
 
- When building this image Docker will first search for this image locally and if it fails it will then turn to a remote repository (e.g. Dockerhub) and look for it under the user `osrf`. The tag `osrf/ros:kinetic-desktop-full` starts this container off with a full desktop install of ROS Kinetic on the top of xenial. Note that if you were to look at the Dockerfile for our base image, you'll find that in includes a `FROM osrf/ros:kinetic-desktop`. In fact, you can go through the Dockerfiles for all such images you'll find the following hierarchy:
+ When building this image Docker will search for this image locally. If it doesn't find the image there, it will turn to a remote repository (e.g. Dockerhub) and look for it under the user `osrf`. The tag `osrf/ros:kinetic-desktop-full` starts this container off with a full desktop install of ROS Kinetic on the top of xenial. Note that if you were to look at the Dockerfile for our base image, you'll find that in includes a `FROM osrf/ros:kinetic-desktop`. In fact, you can go through the Dockerfiles for all such images you'll find the following hierarchy:
 
 ```
 ros:kinetic-desktop-full 
@@ -72,7 +68,7 @@ ros:kinetic-desktop-full
                         --> ubuntu:xenial
 ```
 
-Where the buck stops at `ubuntu:xenial`. If you look at the ubuntu xenial Dockerfile you'll find `FROM scratch`, which effectively specifies an empty image. People from Canonical then add to it an image of a very minimalistic ubuntu xenial. If you inspect the ROS Kinetic Dockerfiles, you will also finds lines like the ones below:
+Where the buck stops at `ubuntu:xenial`. If you look at the ubuntu xenial Dockerfile you'll find `FROM scratch`, which effectively specifies an empty image. People from Canonical then add to it an image of a very minimalistic ubuntu xenial. If you inspect the ROS Kinetic Dockerfiles, you will also find lines like the ones below:
 
 ```
 RUN locale-gen en_US.UTF-8
@@ -105,7 +101,7 @@ Now let's focus on the first and last lines. It is common practice to clean the 
 
 If your computer is running an Intel GPU and you would like your container to be able to access it, you should also install `libgl1-mesa-glx`, `libgl1-mesa-dri`, and `mesa-utils`. You can then decide to use the GPU at runtime. Note that this is also possible to do with NVidia GPUs (I have never tried with AMD) and NVidia even puts out a utility called `nvidia-docker` which makes the process simpler. I use this with my desktop to run GPU powered Tensorflow and have even run containerized video games through steam in the past.
 
-As should be evident from the above command, it is possible to have multiple commands in a single `RUN` statement but they need to be separated by `&&`. A `\` signals a line break and is purely cosmetic but is very useful in making Dockerfiles more readable (and easily editable).
+As should be evident from the above listing, it is possible to have multiple commands in a single `RUN` statement but they need to be separated by `&&`. A `\` signals a line break and it is very useful in making Dockerfiles more readable (and easily editable).
 
 Finally, notice the `-y` in the `apt-get install` statement. This is necessary and without the image cannot be built. This is because the Docker build process does not stop for user input, instead the user input needs to be signaled in advance. The `-y` command tells `apt` to install all the packages without further user input.
 
@@ -123,11 +119,11 @@ Just run
 docker build -t kinetic:dev .
 ```
 
-It is very easy to forget the dot (.) at the end of that command, but maybe considering the command structure will help: the command essentially boils down to `docker build -t <image-name><:optional-version-tag> <image-folder>`. Actually you don't even need the `-t` option that lets you give the image a name. Docker builds a new image for every `RUN`, `ENV`, `COPY` etc. command in the Dockerfile and assigns a hash to it. Each of these intermediate images depends on the image that was created as the result of the previous command. Any of these images can be run (or used in a `FROM` command) using their hash. They can even be tagged after the fact and a single image can have multiple tags. The `-t` option applies a tag to the final such image created when the Dockerfile finishes building.
+It is very easy to forget the dot (.) at the end of that command, but maybe considering the command structure will help: the command essentially boils down to `docker build -t <image-name><:optional-version-tag> <image-folder>`. Actually you don't even need the `-t` option if you don't mind referring to the images with long cumbersome hashes :grinning:. Docker builds a new image for every `RUN`, `ENV`, `COPY` etc. command in the Dockerfile and assigns a hash to it. Each of these intermediate images depends on the image that was created as the result of the previous command. Any of these images can be run (or used in a `FROM` command) using their hash. They can even be tagged after the fact and a single image can have multiple tags. The `-t` option applies a tag to the final such image created when the Dockerfile finishes building.
 
 Note that if you created another Dockerfile that depended upon `ros:kinetic-desktop-full`, it would not download another copy of the base image. It wouldn't even make a new copy of that image on disk. This is the power of Docker's `layered` file system. You can even run multiple instances of containers that all refer back to these images
 
-If this build command finishes successfully (and by all rights it should!), then a new image called  will now exist in your local Docker repository. You can confirm this by running `docker images`. You should see a `REPOSITORY` called `kinetic` with a tag of `dev`.
+If this build command finishes successfully (and by all rights it should!), then a new image called `kinetic:dev` will now exist in your local Docker repository. You can confirm this by running `docker images`. You should see a `REPOSITORY` called `kinetic` with a tag of `dev`.
 
 ```bash
 jari@kalman ~
@@ -153,7 +149,7 @@ docker run -it --net=host \
   -e DISPLAY=$DISPLAY \
   -e QT_GRAPHICSSYSTEM=native \
   -e CONTAINER_NAME=ros-kinetic-dev \
-  -e USER=jari \
+  -e USER=$USER \
   --workdir=/home/$USER \
   -v "/tmp/.X11-unix:/tmp/.X11-unix" \
   -v "/etc/group:/etc/group:ro" \
@@ -184,7 +180,7 @@ This section ensures that the container runs in interactive mode with a tty allo
   --user=$(id -u) \
 ```
 
-This line tells Docker to use a user with the same ID as your current user on the host. Typically this will just be 1000 if you have a single user machine. After this point, we pass a number of runtime environment variables to the container. Note that these will be persistent for the lifetime of the container. For this I use the `-e <container_var>:<host_var>` flag.
+This line tells Docker to use a user with the same ID as your current user on the host. Typically this will just be `1000` if you have a single user machine. After this point, we pass a number of runtime environment variables to the container. Note that these will be persistent for the lifetime of the container. For this I use the `-e <container_var>:<host_var>` flag.
 
 ```bash
   -e DISPLAY=$DISPLAY \
@@ -196,7 +192,7 @@ The first environment variable is useful for telling Docker which display to use
   -e QT_GRAPHICSSYSTEM=native \
 ```
 
-The second variable `QT_GRAPHICSSYSTEM` is necessary to set because of a weird bug I came across with QT windows and Docker. Since ROS GUIs are all QT based it's a good idea to set this! The `CONTAINER_NAME` variable
+The second variable `QT_GRAPHICSSYSTEM` is necessary to set because of a weird bug I came across with QT windows and Docker. Since ROS GUIs are all QT based it's a good idea to set this! Next, the `CONTAINER_NAME` variable:
 
 ```bash
   -e CONTAINER_NAME=ros-kinetic-dev \
@@ -208,13 +204,13 @@ This is a special environment variable my zsh profile uses in order to show if t
   -e USER=$USER \
 ```
 
-Many Linux scripts will look for the `$USER` variable to find the user directory so it's useful to set this as well.
+Many Linux scripts will look for the `$USER` variable to find the user directory so it's useful to set this as well. The `--workdir` flag tells Docker which folder to always start a command in.
 
 ```bash
   --workdir=/home/$USER \
 ```
 
-The `--workdir` flag tells Docker which folder to always start a command in. In this case the _command_ will be `bash` or `zsh` so it makes sense for them to open in the user's home directory. Next I mount a bunch of directories using the flag `-v <contianer_folder>:<host_folder>:<optional_permissions>`.
+In this case the _command_ will be `bash` or `zsh` so it makes sense for them to open in the user's home directory. Next I mount a bunch of directories using the flag `-v <contianer_folder>:<host_folder>:<optional_permissions>`.
 
 ```bash
   -v "/tmp/.X11-unix:/tmp/.X11-unix" \
@@ -249,7 +245,7 @@ jari@kalman (ros-kinetic-dev) ~
 [0] % 
 ```
 
-At this point you can start using this terminal the way you would any terminal on a machine with ROS kinetic installed. `source /opt/ros/kinetic/setup.zsh` and start hacking! ... What is that you say? You need more than one terminal window?
+At this point you can start using this terminal (referred to as the original terminal from here on out) the way you would any terminal on a machine with ROS kinetic installed. `source /opt/ros/kinetic/setup.zsh` and start hacking! ... What is that you say? You need more than one terminal window?
 
 ### Yes, Jari. We need more than one terminal window :angry: 
 
@@ -263,4 +259,53 @@ When a container is running, docker allows you to execute arbitrary commands in 
 docker exec ros-kinetic-dev /ros_entrypoint.sh roscore
 ```
 
-In a similar fashion, you could just run `bash` or `zsh`.
+In a similar fashion, you _could_ just run `bash` or `zsh` but if you tried that the exec command would immediately exit. Docker has a special flag (`-i`) for dealing with terminals, so if you run 
+
+```bash
+docker exec -i ros-kinetic-dev zsh
+```
+
+You will be dropped inside a ZSH terminal that looks the same as the one you got after executing the initial script. The only difference you should note is that you won't be able to run `sudo`. This has something to do with `tty` (or really `pty` I suppose) allocation to the terminal we just opened in the container. I don't fully understand this and I won't pretend to (and I haven't had to care so far so I haven't learned more on the subject). In theory the `-t` flag for `docker exec` should fix this for you but in my experience it doesn't. If you need `sudo`, use the original terminal window we opened or do 
+
+```bash
+docker exec -i -u 0 ros-kinetic-dev zsh
+```
+
+This will drop you into a root shell in the container!
+
+#### 2) The `tmux` route:
+
+This one is pretty straight forward. Run `tmux` in the original terminal window and then create as many new terminal windows as possible. Note that `tmux` won't work in a terminal window you got through `docker exec` (the same `tty` allocation issue).
+
+
+### What happens if I close all the terminals?
+
+Before a discussion of this, let's talk about the `docker ps` command. It shows you all running containers, or rather, it shows you all _active_ containers. If your container is no longer running a process (e.g. you exited all the terminal windows you had in it and had no background processes), then `docker ps` won't show your container anymore. This just means that you container is sleeping (similar to a VM you exited, or rather put into a save-state). 
+
+The reason for the above digression is that depending on the state of your container, getting a terminal window back is different.
+
+#### 1) Container shows up in `docker ps` output:
+
+This means your container is active. As such, simply doing a `docker exec` command will get you back in. Note that if you want the original terminal back, you should run 
+
+```bash
+docker attach <container name>
+```
+
+#### 2) Container does NOT show up in `docker ps` output:
+
+This means your container is sleeping. The simplest way to get back in at this point is to use 
+
+```bash
+docker start -ai <container name>
+```
+
+Note that after a reboot of your computer, all containers that were active will go to sleep, and you will need to start them back up again to use them.
+
+### Some parting remarks
+
+I'm terrible at ending things, so I'm randomly picking a stopping point for this horrendously long post and giving it the most boring title ever.
+
+It is my hope that anyone that reads this leaves with Docker superpowers. Having this knowledge should accelerate the pace at which you experiment with new libraries, set up your development environment on a new computer, and generally make progress without having to worry about conflicts or random updates breaking your build.
+
+If you have any questions or thoughts on this post, please remember to leave a comment.
